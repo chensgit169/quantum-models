@@ -1,9 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import Any
 
 import numpy as np
 
-from scipy.sparse.linalg import LinearOperator
+from scipy.sparse.linalg import LinearOperator, eigsh
 
 
 class Hamiltonian(LinearOperator):
@@ -35,3 +35,24 @@ class Hamiltonian(LinearOperator):
             state: state vector
         """
         raise NotImplementedError
+
+    # Part 1, eigen-states computation
+    def compute_eigenstates(self, v0=None, **kwargs):
+        """"""
+        k = kwargs['k']
+        which = kwargs['which']
+        energy, psi = eigsh(self, k=k, which=which, v0=v0, tol=1e-10)
+        return energy, psi
+
+    def get_ground_state(self, v0=None):
+        energy, psi = self.compute_eigenstates(k=1, which='SA', v0=v0, tol=None)
+        return energy[0], psi[:, 0]
+
+    def get_whole_spectrum(self):
+        energy_small, psi_small = self.compute_eigenstates(k=2 ** self.n - 1, which='SA')
+        energy_large, psi_large = self.compute_eigenstates(k=1, which='LA')
+
+        energy = np.concatenate((energy_small, energy_large))
+        psi = np.concatenate((psi_small, psi_large), axis=1)
+        print(f'whole spectrum generated, N={self.n}, h={self.h}, g={self.g}')
+        return energy, psi
