@@ -1,7 +1,7 @@
 import numpy as np
 
-from hamiltonian.base import Hamiltonian
-from hamiltonian.operators import apply_sigma
+from .base import Hamiltonian
+from .operators import apply_ss
 
 
 class HeisenbergH(Hamiltonian):
@@ -17,23 +17,16 @@ class HeisenbergH(Hamiltonian):
         self.j = j
         self.h = h
         self.use_pbc = use_pbc
+        self.coupling_pairs = [(i, i+1) for i in range(self.n - 1)]
+        if self.use_pbc:
+            self.coupling_pairs.append((self.n - 1, 0))
 
     def _matvec(self, psi: np.ndarray) -> np.ndarray:
-        def apply_ss(i_s: int):
+        def _ss(i_s: int):
             """
             Spin-1/2 SS interaction
             """
-            # boundary term
-            if self.use_pbc:
-                _ = apply_sigma(psi, i_s, self.n - 1)
-                psi_out = apply_sigma(_, i_s, 0)
-            else:
-                psi_out = np.zeros_like(psi)
-
-            # inner term
-            for i_psi in range(self.n - 1):
-                _ = apply_sigma(psi, i_s, i_psi)
-                psi_out += apply_sigma(_, i_s, i_psi + 1)
+            psi_out = np.sum([apply_ss(psi, i_s, i1, i2) for i1, i2 in self.coupling_pairs], axis=0)
             return psi_out
 
-        return apply_ss(1) + apply_ss(2) + apply_ss(3)
+        return _ss(1) + _ss(2) + _ss(3)

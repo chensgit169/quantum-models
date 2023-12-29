@@ -22,6 +22,17 @@ def apply_sigma(psi: ndarray, i_s: int, i_psi: int):
     return psi_out
 
 
+# Interaction terms
+def apply_ss(psi, i_s: int, i1, i2):
+    """
+    Spin-1/2 SS interaction
+    """
+    assert i1 != i2
+    _ = apply_sigma(psi, i_s, i1)
+    psi_out = apply_sigma(_, i_s, i2)
+    return psi_out
+
+
 # Part 2, global operators, with n always explicitly specified
 def apply_parity_operator(psi: ndarray, n: int):
     """ continued multiplication of sigma^z_i """
