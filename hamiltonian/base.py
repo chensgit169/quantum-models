@@ -37,11 +37,9 @@ class Hamiltonian(LinearOperator):
         raise NotImplementedError
 
     # Part 1, eigen-states computation
-    def compute_eigenstates(self, v0=None, **kwargs):
+    def compute_eigenstates(self, k: int, which: str = 'SA', v0=None, **kwargs):
         """"""
-        k = kwargs['k']
-        which = kwargs['which']
-        energy, psi = eigsh(self, k=k, which=which, v0=v0, tol=1e-10)
+        energy, psi = eigsh(self, k=k, which=which, v0=v0, tol=1e-10, **kwargs)
         return energy, psi
 
     def get_ground_state(self, v0=None):
@@ -54,5 +52,4 @@ class Hamiltonian(LinearOperator):
 
         energy = np.concatenate((energy_small, energy_large))
         psi = np.concatenate((psi_small, psi_large), axis=1)
-        print(f'whole spectrum generated, N={self.n}, h={self.h}, g={self.g}')
         return energy, psi
