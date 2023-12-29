@@ -17,6 +17,7 @@ class Hamiltonian(LinearOperator):
             n: site number
             m: dimension of local Hilbert space
             args: interaction constants
+            dtype: float or complex
         """
         self.n = n
         self.m = m
@@ -53,3 +54,11 @@ class Hamiltonian(LinearOperator):
         energy = np.concatenate((energy_small, energy_large))
         psi = np.concatenate((psi_small, psi_large), axis=1)
         return energy, psi
+
+    # Part 2, pure state and thermal expectation
+    def expectation(self, psi: np.ndarray):
+        return psi.copy() @ self.matvec(psi)
+
+    def partition(self, beta: float):
+        # TODO
+        raise NotImplementedError
