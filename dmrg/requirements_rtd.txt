@@ -1,2 +1,0 @@
-numpy==1.6.1
-numpydoc==0.4
