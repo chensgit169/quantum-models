@@ -1,3 +1,9 @@
+# Two-level system in a monochromatic field
+
+[TOC]
+
+## Theory
+
 For a two-level system driven by a monochromatic field
 $$
 \begin{equation}
@@ -9,12 +15,12 @@ $$
 \begin{equation}\label{eq:H}
     H=
     \begin{bmatrix}
-        E_1&v(t) \\
-        v(t)&E_2
+        -\frac{E}{2}&v(t) \\
+        v(t)&\frac{E}{2}
     \end{bmatrix}\approx
     \begin{bmatrix}
-        E_1&\frac{\epsilon_0}{2}e^{i\omega_0 t} \\
-        \frac{\epsilon_0}{2}e^{-i\omega_0 t}&E_2
+        \frac{E}{2}&\frac{\epsilon_0}{2}e^{i\omega_0 t} \\
+        \frac{\epsilon_0}{2}e^{-i\omega_0 t}&-\frac{E}{2}
     \end{bmatrix}.
 \end{equation}
 $$
@@ -22,14 +28,59 @@ The time-evolution Schrödinger reads,
 $$
 i\hbar\frac{\partial}{\partial t}\vec \psi=\hat H \vec \psi.
 $$
-Under RWA it can be exactly solved by ansatz
+Under RWA it can be analytically solved, the the independent special solutions are:
 $$
-\begin{equation}\label{eq:3.ansatz}
-    \vec \psi_i
+\begin{equation}
+    \vec \psi^\pm(t)
     =
     \begin{bmatrix}
-    a^ie^{i\omega_0t}\\
-    b^i
-    \end{bmatrix}, i=1,2
+    e^{+i\frac{\omega_0}{2}t} & 0\\
+    0 & e^{-i\frac{\omega_0}{2}t}
+    \end{bmatrix}e^{\mp i\frac{\Omega_0t}{2}}|\pm\rangle
 \end{equation}
 $$
+where
+$$
+|+\rangle=\begin{bmatrix}
+    a^+\\
+    -a^-
+    \end{bmatrix} \text{,  }
+|-\rangle=\begin{bmatrix}
+    a^-\\
+    a^+
+    \end{bmatrix}
+$$
+and
+$$
+a^\pm=\frac{\epsilon_0}{\sqrt{\epsilon_0^2+(\Delta \pm \Omega)^2}}\\
+\Delta=E-\omega_0,\Omega=\sqrt{\Delta^2+\epsilon_0^2})^2
+$$
+By setting initial condition
+$$
+\vec \psi(0)
+    =
+    \begin{bmatrix}
+    1\\
+    0
+    \end{bmatrix},
+$$
+we have
+$$
+\vec \psi(t)
+    = a^+ \vec \psi^+(t)+a^- \vec \psi^+(t)
+$$
+
+## Numerics
+
+```python
+solu_rwa = solve_ivp(h_rwa, t_span, psi0, t_eval=t_eval, method='RK45')
+solu_full = solve_ivp(h_full, t_span, psi0, t_eval=t_eval, method='RK45')
+```
+
+![near_resonance_strong_field](C:\Users\weich\PycharmProjects\quantum-models\Schoedinger\Sinusoidally-Driven-Two-Level\near_resonance_strong_field.png)
+
+![near_resonance_weak_field](C:\Users\weich\PycharmProjects\quantum-models\Schoedinger\Sinusoidally-Driven-Two-Level\near_resonance_weak_field.png)
+
+![off_resonance_strong_field](C:\Users\weich\PycharmProjects\quantum-models\Schoedinger\Sinusoidally-Driven-Two-Level\off_resonance_strong_field.png)
+
+![off_resonance_weak_field](C:\Users\weich\PycharmProjects\quantum-models\Schoedinger\Sinusoidally-Driven-Two-Level\off_resonance_weak_field.png)
