@@ -83,29 +83,30 @@ def time_evolve_plot():
 
     n = 20
     e = 2
-    u = 1
-
-    model = TightBinding(n, e, u)
-
-    psi_0 = np.zeros(n)
-    n_i, n_f = 0, 2
-    psi_0[n_i] = 1  # |psi_0> = |1>
-
-    ts = np.linspace(0, 10, 100)
-
-    def calc_p(t: float):
-        return np.abs(model.psi_t(psi_0, t)[n_f])**2
-
-    p_n_f = np.array([calc_p(t) for t in ts])
-
     plt.figure()
-    plt.plot(ts, p_n_f, label=f"$P_{n_f+1}(t)$")
+    for u in [1, 2, 10]:
+
+        model = TightBinding(n, e, u)
+
+        psi_0 = np.zeros(n)
+        n_i, n_f = 0, 2
+        psi_0[n_i] = 1  # |psi_0> = |1>
+
+        ts = np.linspace(0, 5, 5000)
+
+        def calc_p(t: float):
+            return np.abs(model.psi_t(psi_0, t)[n_f])**2
+
+        p_n_f = np.array([calc_p(t) for t in ts])
+
+        plt.plot(ts, p_n_f, label=f"$u={u:.1f}$")
+
     plt.xlabel("t")
-    plt.title(f"Time evolution, $\\epsilon={e:.1f}$, $u={u:.1f}$")
+    plt.title(f"Time evolution of $P_{n_f+1}(t)$, $\\epsilon=$const")
     plt.legend()
 
     # plt.show()
-    plt.savefig("tight_binding_time_evolve.png", dpi=400)
+    plt.savefig("tight_binding_time_evolve_us.png", dpi=400)
 
 
 if __name__ == '__main__':
