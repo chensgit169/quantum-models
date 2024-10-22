@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import ndarray
 
-from hamiltonian.base import Hamiltonian
+from hamiltonian.base.base import Hamiltonian
 
 
 class TightBinding(Hamiltonian):
@@ -19,6 +19,8 @@ class TightBinding(Hamiltonian):
         Hamiltonian.__init__(self, 1, state_number, use_pbc)
         self.u = u
         self.eps = eps
+        self._energy = None
+        self._psi = None
 
         if isinstance(eps, (float, int)):
             self.eps = np.array([eps] * state_number)
@@ -43,6 +45,28 @@ class TightBinding(Hamiltonian):
 
         return psi_out
 
+    def get_whole_spectrum(self, **kwargs):
+        """
+        Avoid computing the whole spectrum each time.
+
+        # TODO: use decorator to manage memory while avoiding unnecessary computation
+        """
+        if self._energy is None or self._psi is None:
+            self._energy, self._psi = super().get_whole_spectrum(**kwargs)
+        return self._energy, self._psi
+
+    def psi_t(self, psi_0: ndarray, t: float) -> ndarray:
+        """
+        Time evolution of the state vector psi.
+        """
+        if not psi_0.shape == (self.m, ):
+            raise ValueError("The length of psi_0 should be equal to site_number.")
+        energy, psi = self.get_whole_spectrum()
+        c_0 = (psi_0 @ psi)
+        c_t = np.exp(-1j * energy * t) * c_0
+        psi_t = psi @ c_t
+        return psi_t
+
 
 def test():
     n = 20
@@ -54,5 +78,36 @@ def test():
     assert np.allclose(energy, e * np.ones(n))
 
 
+def time_evolve_plot():
+    import matplotlib.pyplot as plt
+
+    n = 20
+    e = 2
+    u = 1
+
+    model = TightBinding(n, e, u)
+
+    psi_0 = np.zeros(n)
+    n_i, n_f = 0, 2
+    psi_0[n_i] = 1  # |psi_0> = |1>
+
+    ts = np.linspace(0, 10, 100)
+
+    def calc_p(t: float):
+        return np.abs(model.psi_t(psi_0, t)[n_f])**2
+
+    p_n_f = np.array([calc_p(t) for t in ts])
+
+    plt.figure()
+    plt.plot(ts, p_n_f, label=f"$P_{n_f+1}(t)$")
+    plt.xlabel("t")
+    plt.title(f"Time evolution, $\\epsilon={e:.1f}$, $u={u:.1f}$")
+    plt.legend()
+
+    # plt.show()
+    plt.savefig("tight_binding_time_evolve.png", dpi=400)
+
+
 if __name__ == '__main__':
     test()
+    time_evolve_plot()
