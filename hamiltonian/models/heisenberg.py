@@ -1,7 +1,7 @@
 import numpy as np
 
-from .base import Hamiltonian
-from .operators import apply_ss
+from hamiltonian.base.base import Hamiltonian
+from hamiltonian.utils.operators import apply_ss
 
 
 class HeisenbergH(Hamiltonian):

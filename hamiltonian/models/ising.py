@@ -2,8 +2,8 @@ import numpy as np
 from numpy import ndarray
 from numpy.linalg import norm
 
-from hamiltonian.base import Hamiltonian
-from hamiltonian.operators import apply_ising_hamiltonian, apply_longitudinal_field, apply_transverse_field, apply_sigma
+from hamiltonian.base.base import Hamiltonian
+from hamiltonian.utils.operators import apply_ising_hamiltonian, apply_longitudinal_field, apply_transverse_field, apply_sigma
 
 
 class IsingChain(Hamiltonian):

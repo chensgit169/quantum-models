@@ -47,14 +47,16 @@ class Hamiltonian(LinearOperator):
         energy, psi = self.compute_eigenstates(k=1, which='SA', v0=v0, tol=None)
         return energy[0], psi[:, 0]
 
-    def get_whole_spectrum(self):
+    def get_whole_spectrum(self, **kwargs):
         """
         Since eigsh does not support computing all eigenvalues, we split.
 
         TODO: set limitation on the number of eigenvalues
         """
-        energy_small, psi_small = self.compute_eigenstates(k=self.m ** self.n - 1, which='SA')
-        energy_large, psi_large = self.compute_eigenstates(k=1, which='LA')
+        k1 = self.m ** self.n - 1
+        k2 = 1
+        energy_small, psi_small = self.compute_eigenstates(k=k1, which='SA', **kwargs)
+        energy_large, psi_large = self.compute_eigenstates(k=k2, which='LA', **kwargs)
 
         energy = np.concatenate((energy_small, energy_large))
         psi = np.concatenate((psi_small, psi_large), axis=1)

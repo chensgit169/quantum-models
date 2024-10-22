@@ -1,4 +1,4 @@
-from .base import Hamiltonian
+from hamiltonian.base.base import Hamiltonian
 
 
 class MagneticField(Hamiltonian):

@@ -1,5 +1,5 @@
-from hamiltonian.heisenberg import HeisenbergH
-from hamiltonian.ising import IsingChain
+from hamiltonian.models.heisenberg import HeisenbergH
+from hamiltonian.models.ising import IsingChain
 
 
 def ising():
