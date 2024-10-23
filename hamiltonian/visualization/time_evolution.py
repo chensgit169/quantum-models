@@ -23,11 +23,10 @@ def draw_heatmap(ts_pn, ts=None, ax=None):
     plt.xlabel('n')
     plt.ylabel('t')
 
-    # Set the x-axis labels to be the site number
+    # Set the t-axis ticks, only show 10 ticks
     Nt = 10
     t_spacing = nt // Nt
     t_ticks = list(range(0, nt, t_spacing))
-    print(t_ticks)
 
     ax.set_xticks(ticks=[i + 0.5 for i in range(nn)],
                   labels=[str(i + 1) for i in range(nn)])
