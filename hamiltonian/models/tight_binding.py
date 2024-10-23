@@ -55,14 +55,26 @@ class TightBinding(Hamiltonian):
             self._energy, self._psi = super().get_whole_spectrum(**kwargs)
         return self._energy, self._psi
 
-    def psi_t(self, psi_0: ndarray, t: float) -> ndarray:
+    def psi_t(self, psi_0: ndarray, t: float, basis: str = "computation") -> ndarray:
         """
         Time evolution of the state vector psi.
+
+        Args:
+            psi_0: initial state vector
+            t: time
+            basis: basis for input, "computation" or "energy"
         """
         if not psi_0.shape == (self.m, ):
             raise ValueError("The length of psi_0 should be equal to site_number.")
         energy, psi = self.get_whole_spectrum()
-        c_0 = (psi_0 @ psi)
+
+        if basis == "computation":
+            c_0 = (psi_0 @ psi)
+        elif basis == "energy":
+            c_0 = psi_0
+        else:
+            raise ValueError(f"basis should be either 'computation' or 'energy', not '{basis}'.")
+
         c_t = np.exp(-1j * energy * t) * c_0
         psi_t = psi @ c_t
         return psi_t
