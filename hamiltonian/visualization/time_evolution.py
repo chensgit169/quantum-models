@@ -23,13 +23,14 @@ def draw_heatmap(ts_pn, ts=None, ax=None):
     plt.xlabel('n')
     plt.ylabel('t')
 
-    # Set the t-axis ticks, only show 10 ticks
-    Nt = 10
+    # Set the axis ticks, only show up to 10 ticks
+    Nt, Nn = min(10, nt), min(10, nn)
     t_spacing = nt // Nt
+    n_spacing = nn // Nn
     t_ticks = list(range(0, nt, t_spacing))
 
-    ax.set_xticks(ticks=[i + 0.5 for i in range(nn)],
-                  labels=[str(i + 1) for i in range(nn)])
+    ax.set_xticks(ticks=[i + 0.5 for i in range(0, nn, n_spacing)],
+                  labels=[str(i + 1) for i in range(0, nn, n_spacing)])
     ax.set_yticks(ticks=t_ticks,
                   labels=[f'{ts[t]:.2f}' for t in t_ticks])
 
