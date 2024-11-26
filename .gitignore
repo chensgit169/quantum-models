@@ -3,4 +3,8 @@ reference
 *.iml
 *.idea
 
+__pycache__
+
 *.ipynb_checkpoints
+
+tese.py
