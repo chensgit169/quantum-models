@@ -7,3 +7,12 @@ This repository contains some codes and notes from my study and research on quan
 ```
 
 Chen Wei, weichen191@mails.ucas.ac.cn
+
+
+
+Useful packages:
+
+```
+pip install quantities
+```
+
