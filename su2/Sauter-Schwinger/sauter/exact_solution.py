@@ -12,11 +12,11 @@ mp.dps = 30  # precision digits
 
 
 class SauterSolution(SauterSchwingerSolver):
-    def __init__(self, E0, tau, m=1):
+    def __init__(self, E0, tau, m=1.0):
         self.E0 = E0
         self.tau = tau
         A_func, E_func = sauter_pulse(E0, tau)
-        super().__init__(self, A_func, E_func, m=m)
+        super().__init__(A_func, E_func, m)
 
     def omega_0(self, p):
         """ limiting energy at t-> -infty"""

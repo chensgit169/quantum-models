@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.integrate import cumulative_trapezoid
+from scipy.integrate import cumulative_trapezoid, trapezoid
 
 from su2.common.adiabatic.adiabatic_picture import eta_by_integral, su2_exp
 from su2.common.adiabatic.integrator import evolve
@@ -8,7 +8,7 @@ from sauter_pulse import sauter_pulse
 
 
 class SauterSchwingerSolver:
-    def __init__(self, A_func, E_func, m=1, *args, **kwargs):
+    def __init__(self, A_func, E_func, m=1.0, *args, **kwargs):
         self.A_func = A_func
         self.E_func = E_func
         self.m = m
@@ -73,8 +73,13 @@ class DoubleSauter(SauterSchwingerSolver):
         if method == 'num':
             psi = evolve(ts, self.A_func, self.E_func, p=p, only_final=True)
         elif method == 'wkb':
-            data = self.wkb_psi_tp(ts, p)
-            psi = (data['alpha'][-1], data['beta'][-1])
+            def omega(t):
+                return self.omega_p(t, p)
+
+            eta_vals = eta_by_integral(ts, self.E_func, omega)
+            a1_vals = trapezoid(eta_vals, ts)
+            alpha, beta = su2_exp(a1_vals)
+            psi = np.array([alpha, beta])
         else:
             raise ValueError(f"Unknown method: {method}")
         return psi

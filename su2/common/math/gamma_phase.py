@@ -1,14 +1,15 @@
-# Compare derivative d/dy arg Gamma(i y) with approximations
 import matplotlib.pyplot as plt
 import mpmath as mp
 import numpy as np
 
-mp.mp.dps = 50
 
+mp.mp.dps = 50
+plt.rcParams.update({'font.size': 14})
 """
 Phase of Gamma(i y) = arg Gamma(i y)
 
 """
+
 
 
 def deriv_arg_gamma(y):
@@ -58,16 +59,18 @@ def deriv_demo():
     small_approx = np.array([deriv_small_y(y, order=4) for y in small_ys])
 
     plt.figure(figsize=(8, 5))
-    plt.plot(ys, exact, label="Exact derivative: Re ψ(i y)")
-    plt.plot(large_ys, stirling, label="Stirling approx: ln y", linestyle="--")
-    plt.plot(small_ys, small_approx, label=r"Small-y approx: $-\gamma$", linestyle=":")
+    plt.plot(ys, exact, label="Re ψ(i x)")
+    plt.plot(large_ys, stirling, label=r"Stirling approx: $\ln|x|+ \frac{1}{12 x^2} - \frac{1}{360 x^4}$",
+             linestyle="--")
+    plt.plot(small_ys, small_approx, label=r"Small-x approx: $-\gamma+\zeta(3) x^2 - \zeta(5) x^4$", linestyle=":")
     plt.xscale('symlog', linthresh=1e-2)  # show small region nicely
-    plt.xlabel("y")
-    plt.ylabel(r"$\partial_y \arg\Gamma(i y)$")
+    plt.xlabel("x")
+    plt.ylabel(r"$\partial_x \arg\Gamma(i x)$")
     plt.legend()
-    plt.title("Derivative of phase: exact vs Stirling and small-y approximation")
+    # plt.title("Derivative of phase: exact vs Stirling and small-y approximation")
     plt.grid(True, which="both", ls="--", lw=0.5)
     plt.tight_layout()
+    plt.savefig('figures/deriv_arg_gamma_comparison.pdf', dpi=400)
     plt.show()
 
     # # Also show relative error between exact and Stirling for y>1
@@ -100,14 +103,14 @@ def demo_phase():
     arg_exact = np.unwrap(arg_exact)  # unwrap phase
     arg_stirling = np.array([arg_gamma_stirling(y) for y in ys])
 
-    plt.figure(figsize=(7, 5))
+    # plt.figure(figsize=(7, 5))
     plt.xlim(0, 4)
-    plt.plot(ys, arg_exact / np.pi, label="arg Γ(i y) (exact)")
+    plt.plot(ys, arg_exact / np.pi, label="arg Γ(i x) (exact)")
     plt.plot(ys, arg_stirling / np.pi, label="Stirling approx")
-    plt.xlabel("y")
+    plt.xlabel("x")
     plt.ylabel("phase")
     plt.legend()
-    plt.title("Comparison: arg Γ(i y) vs Stirling approximation")
+    plt.title("Comparison: arg Γ(i x) vs Stirling approximation")
     plt.tight_layout()
     plt.show()
 

@@ -8,9 +8,7 @@ from tqdm import tqdm
 
 from su2.common.magnus.magnus_su2 import a3_integral, c2_integral
 
-
 plt.rcParams['font.size'] = 16
-
 
 """
 Magnus expansion for Landau-Zener non-adiabatic transition problem.
@@ -18,8 +16,11 @@ Magnus expansion for Landau-Zener non-adiabatic transition problem.
 Last updated: Nov. 2nd, 2025
 """
 
-
 data_filename = 'data/magnus_lz.npz'
+
+plt.rcParams['font.size'] = 14
+plt.rcParams['lines.linewidth'] = 2
+plt.rcParams['axes.labelsize'] = 21
 
 
 ############################
@@ -69,7 +70,7 @@ def a1_imag(alpha, cutoff=40, N=400000):
     return trapezoid(integrand, t)
 
 
-def c2_int(alpha, S=40, N=int(1e6)):
+def c2_int(alpha, S=40, N=int(1e4)):
     return c2_integral(v_s, -S, S, alpha, N=N)
 
 
@@ -112,9 +113,13 @@ def demo(item='probability', recompute=False):
     c2_vals = data['c2']
     a3_vals = data['a3']
 
-    plt.figure(figsize=(7, 5))
+    print(a1_vals[0], c2_vals[0], a3_vals[0])
+
+    plt.figure(figsize=(8, 6))
 
     if item == 'probability':
+        plt.figure(figsize=(8, 6))
+
         p_exact = lz_p(a_vals)
         p_1st = np.sin(a1_vals) ** 2
 
@@ -122,51 +127,71 @@ def demo(item='probability', recompute=False):
         p_2nd = np.abs(u01_2nd) ** 2
         _, u01_3rd = u_mat(a1_vals, c2_vals, a3_vals)
         p_3rd = np.abs(u01_3rd) ** 2
+        plt.text(0.8, 0.9, '(a)', fontsize=24)
 
-        plt.plot(g_vals, p_1st, label=r"1st Magnus", lw=1.2)
-        plt.plot(g_vals, p_2nd, label=r"2nd Magnus", lw=1.2)
-        plt.plot(g_vals, p_3rd, label=r"3rd Magnus", lw=1.2)
-        plt.plot(g_vals, p_exact, "--", label=r"$\exp(-2\pi\gamma)$", lw=1.2, color='k')
+        # plt.plot(g_vals, p_1st, '--', label=r"1st Magnus", lw=1.2)
+        # plt.plot(g_vals, p_2nd, ':', label=r"2nd Magnus", lw=1.2)
+        # plt.plot(g_vals, p_3rd, '-.', label=r"3rd Magnus", lw=1.2)
+        plt.plot(g_vals, p_1st, '--', label=r"FMA")
+        plt.plot(g_vals, p_2nd, ':', label=r"SMA")
+        plt.plot(g_vals, p_3rd, '-.', label=r"TMA")
+        plt.plot(g_vals, p_exact, label=r"Exact", color='k')
         plt.ylabel(r"$P$")
         plt.xlim(0, 1)
         # plt.yscale('log')
-        fig_filename = "Magnus-Landau-Zener-Probability.pdf"
+        fig_filename = "Magnus-Landau-Zener-Probability-MA.pdf"
 
     elif item == 'phase':
+        def phase_approx(a, c):
+            theta = np.sqrt(a ** 2 + c ** 2)
+            tan_phi = np.tan(theta) * c / theta
+            phi = np.arctan(tan_phi)
+            return phi
+
         u_11_2nd, _ = u_mat(a1_vals, c2_vals)
         u_11_3rd, _ = u_mat(a1_vals, c2_vals, a3_vals)
 
-        phase_2nd = - np.angle(u_11_2nd)
-        phase_3rd = - np.angle(u_11_3rd)
+        phase_2nd = phase_approx(a1_vals, c2_vals)
+        phase_3rd = phase_approx(a1_vals + a3_vals, c2_vals)
         phase_exact = stokes_phase(a_vals)
 
-        plt.plot(g_vals, phase_2nd/np.pi, label=r"2nd Magnus")
-        plt.plot(g_vals, phase_3rd/np.pi, label=r"3rd Magnus")
-        plt.plot(g_vals, phase_exact/np.pi, "--", label="Exact")
+        plt.figure(figsize=(8, 6))
+        plt.text(1.2, 0.23, '(b)', fontsize=24)
+        plt.plot([], [])
+        # plt.plot(g_vals, phase_2nd / np.pi, ':', label=r"2nd Magnus", lw=1.2)
+        # plt.plot(g_vals, phase_3rd / np.pi, '-.', label=r"3rd Magnus", lw=1.2)
+        plt.plot(g_vals, phase_2nd / np.pi, ':', label=r"SMA")
+        plt.plot(g_vals, phase_3rd / np.pi, '-.', label=r"TMA")
+        plt.plot(g_vals, phase_exact / np.pi, label="Exact", color='k')
         # r"$\frac{\pi}{4} +\gamma(\ln\gamma -1)+\arg\left[\Gamma(1-i\delta)\right]$")
         plt.ylabel(r"$\varphi_S/{\pi}$ ")
         plt.xlim(0, 1.5)
-        fig_filename = "Magnus-Landau-Zener-Phase.pdf"
+        fig_filename = "Magnus-Landau-Zener-Phase-MA.pdf"
     elif item == 'terms':
-        plt.plot(g_vals, a1_vals, label=r'$A_1(\alpha)$')
+        theta = np.sqrt(a1_vals ** 2 + c2_vals ** 2)
+        tan_phi = np.tan(theta) * c2_vals
+        plt.plot(g_vals, np.pi/2-a1_vals, label=r'$A_1(\alpha)$')
         plt.plot(g_vals, c2_vals, label=r'$C_2(\alpha)$')
-        plt.plot(g_vals, a3_vals, label=r'$A_3(\alpha)$')
+        # plt.plot(g_vals, a3_vals, label=r'$A_3(\alpha)$')
+        # plt.plot(g_vals, np.pi/2-theta, label=r'$\Theta(\alpha)$')
+        # plt.plot(g_vals, tan_phi, label=r'$\tan\varphi_S(\alpha)$')
         plt.title('Magnus expansion terms')
         plt.ylabel('Integral values')
+        plt.yscale('log')
         fig_filename = "Magnus-Landau-Zener-Terms.pdf"
     else:
         raise ValueError(f'Unknown item: {item}')
 
     plt.xlabel(r'$\gamma$')
     plt.legend()
-    plt.grid(True)
+    # plt.grid(True)
     plt.tight_layout()
     plt.savefig(f'figures/{fig_filename}', dpi=400, transparent=True)
     plt.show()
 
 
 def demo_c2():
-    a_vals = np.linspace(100, 150, 100)
+    a_vals = np.linspace(0.001, 1, 100)
     c2_vals = np.array([c2_int(a) for a in tqdm(a_vals)])
 
     plt.figure(figsize=(7, 5))
@@ -184,4 +209,6 @@ def demo_c2():
 
 if __name__ == '__main__':
     demo(recompute=False, item='probability')
+    demo(recompute=False, item='phase')
     # demo_c2()
+    # demo(recompute=False, item='terms')

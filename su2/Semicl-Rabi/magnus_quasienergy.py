@@ -207,80 +207,80 @@ def eps_wf(d_vals, a_m, c_m):
     return approx
 
 
-def weak_field(recompute=False, with_shift=False):
-    a = 1.2
-
-    if with_shift:
-        data_filename = f'data/limiting/wf_avoided_crossing_a={a:.1f}.npz'
-        img_filename = f'figures/limiting/wf_avoided_crossing_a={a:.1f}.pdf'
-        d_vals = np.linspace(2.85, 3.05, 201)
-    else:
-        data_filename = f'data/limiting/weak_field_a={a:.1f}.npz'
-        img_filename = f'figures/limiting/weak_field_a={a:.1f}.pdf'
-        d_vals = np.linspace(0, 7.8, 201)
-
-    if os.path.exists(data_filename) and not recompute:
-        data = np.load(data_filename)
-        d_vals = data['d']
-        e_vals = data['e']
-    else:
-        # exact quasi-energy
-        e_vals = np.array([quasi_energy(a, d) for d in tqdm(d_vals)])
-        np.savez(data_filename, d=d_vals, e=e_vals, a=a)
-
-    def f(t, _a, _d):
-        return _a * np.sin(t) * np.exp(1j * _d * t) / 2
-
-    # approximation for small field
-    a1_m = np.array([a1_integral(f, 0, 2 * np.pi, a, d) for d in d_vals])
-    c2_m = np.array([c2_integral(f, 0, 2 * np.pi, a, d) for d in d_vals])
-    a3_m = np.array([a3_integral(f, 0, 2 * np.pi, a, d) for d in d_vals])
-
-    approx_1st = eps_wf(d_vals, a1_m, 0)
-    approx_2nd = eps_wf(d_vals, a1_m, c2_m)
-    approx_3rd = eps_wf(d_vals, a1_m + a3_m, c2_m)
-
-    line1 = plt.plot(d_vals, e_vals, label='Exact')
-    color1 = line1[0].get_color()
-    if not with_shift:
-        plt.plot(d_vals, -e_vals, color=color1)
-
-    plt.plot(d_vals, approx_1st, label='1st Magnus', linestyle='--', color='black')
-    plt.plot(d_vals, approx_2nd, label='2nd Magnus', linestyle='-.', color='black')
-    plt.plot(d_vals, approx_3rd, label='3rd Magnus', linestyle=':', color='black')
-
-    if with_shift:
-        peak = np.argmax(e_vals)
-        d_peak = d_vals[peak]
-        e_pos = e_vals[peak]
-        print("d_peak =", d_peak, ", d_val =", e_pos)
-
-        # Bloch-Siegert shift around d = 3
-        delta_bs = a ** 2 / 8 / d_peak
-
-        x0, y0 = d_peak, e_pos
-        x1, y1 = d_peak, e_pos - delta_bs
-
-        dx = x1 - x0
-        dy = y1 - y0
-        head_length = 0.005
-
-        plt.arrow(x0, y0, dx, dy + head_length,
-                  head_length=head_length, fc='red', ec='red', linewidth=0.25)
-
-        plt.text(x0 - 0.01, (y0 + y1) / 2,
-                 "$\\frac{A^2}{8\\Delta}$", fontsize=20, color="black", ha='center')
-
-    plt.xlim(np.min(d_vals), np.max(d_vals))
-
-    plt.grid(True, alpha=0.3)
-    plt.xlabel(r'$\Delta$', fontsize=18)
-    plt.ylabel(r'$\epsilon$', fontsize=20)
-    plt.title(r'$A=$' + f'{a}')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(img_filename, dpi=400)
-    plt.show()
+# def weak_field(recompute=False, with_shift=False):
+#     a = 1.
+#
+#     if with_shift:
+#         data_filename = f'data/limiting/wf_avoided_crossing_a={a:.1f}.npz'
+#         img_filename = f'figures/limiting/wf_avoided_crossing_a={a:.1f}.pdf'
+#         d_vals = np.linspace(2.85, 3.05, 201)
+#     else:
+#         data_filename = f'data/limiting/weak_field_a={a:.1f}.npz'
+#         img_filename = f'figures/limiting/weak_field_a={a:.1f}.pdf'
+#         d_vals = np.linspace(0, 3, 201)
+#
+#     if os.path.exists(data_filename) and not recompute:
+#         data = np.load(data_filename)
+#         d_vals = data['d']
+#         e_vals = data['e']
+#     else:
+#         # exact quasi-energy
+#         e_vals = np.array([quasi_energy(a, d) for d in tqdm(d_vals)])
+#         np.savez(data_filename, d=d_vals, e=e_vals, a=a)
+#
+#     def f(t, _a, _d):
+#         return _a * np.sin(t) * np.exp(1j * _d * t) / 2
+#
+#     # approximation for small field
+#     a1_m = np.array([a1_integral(f, 0, 2 * np.pi, a, d) for d in d_vals])
+#     c2_m = np.array([c2_integral(f, 0, 2 * np.pi, a, d) for d in d_vals])
+#     a3_m = np.array([a3_integral(f, 0, 2 * np.pi, a, d) for d in d_vals])
+#
+#     approx_1st = eps_wf(d_vals, a1_m, 0)
+#     approx_2nd = eps_wf(d_vals, a1_m, c2_m)
+#     approx_3rd = eps_wf(d_vals, a1_m + a3_m, c2_m)
+#
+#     line1 = plt.plot(d_vals, e_vals, label='Exact')
+#     color1 = line1[0].get_color()
+#     if not with_shift:
+#         plt.plot(d_vals, -e_vals, color=color1)
+#
+#     plt.plot(d_vals, approx_1st, label='1st Magnus', linestyle='--', color='black')
+#     plt.plot(d_vals, approx_2nd, label='2nd Magnus', linestyle='-.', color='black')
+#     plt.plot(d_vals, approx_3rd, label='3rd Magnus', linestyle=':', color='black')
+#
+#     if with_shift:
+#         peak = np.argmax(e_vals)
+#         d_peak = d_vals[peak]
+#         e_pos = e_vals[peak]
+#         print("d_peak =", d_peak, ", d_val =", e_pos)
+#
+#         # Bloch-Siegert shift around d = 3
+#         delta_bs = a ** 2 / 8 / d_peak
+#
+#         x0, y0 = d_peak, e_pos
+#         x1, y1 = d_peak, e_pos - delta_bs
+#
+#         dx = x1 - x0
+#         dy = y1 - y0
+#         head_length = 0.005
+#
+#         plt.arrow(x0, y0, dx, dy + head_length,
+#                   head_length=head_length, fc='red', ec='red', linewidth=0.25)
+#
+#         plt.text(x0 - 0.01, (y0 + y1) / 2,
+#                  "$\\frac{A^2}{8\\Delta}$", fontsize=20, color="black", ha='center')
+#
+#     plt.xlim(np.min(d_vals), np.max(d_vals))
+#
+#     plt.grid(True, alpha=0.3)
+#     plt.xlabel(r'$\Delta$', fontsize=18)
+#     plt.ylabel(r'$\epsilon$', fontsize=20)
+#     plt.title(r'$A=$' + f'{a}')
+#     plt.legend()
+#     plt.tight_layout()
+#     plt.savefig(img_filename, dpi=400)
+#     plt.show()
 
 
 def fast_driving():
@@ -309,7 +309,6 @@ def fast_driving():
 
 if __name__ == '__main__':
     # compute_zeros(recompute=False, illustration=True)
-    # small_gap(with_correction=True)
-    weak_field(recompute=False, with_shift=True)
+    small_gap(with_correction=True)
     # demo_int_f_d()
     # fast_driving()

@@ -8,11 +8,11 @@ weak_field:
       N: 200
 
   params-set2:
-    name: case1
+    name: avoided crossing
     a: 1.0
     d:
-      min: 4.942
-      max: 4.952
+      min: 2.85
+      max: 2.96
       N: 200
 
   params-set3:
@@ -23,7 +23,29 @@ weak_field:
       max: 4.9478
       N: 200
 
+  params-set4:
+    name: very weak field
+    a: 0.1
+    d:
+      min: 0.0
+      max: 6.0
+      N: 200
 
+  params-set5:
+    name: case1
+    a: 1.0
+    d:
+      min: 4.99999
+      max: 5.00001
+      N: 200
+
+  params-set6:
+    name: plot
+    g: 1.0
+    d:
+      min: 0
+      max: 3.2
+      N: 200
 
 small_gap:
     ...
@@ -33,8 +55,8 @@ slow_driving:
   params-set1:
     name: case1
     d:             # a=d
-      min: 0.1
-      max: 2.0
+      min: 0.001
+      max: 4.5
       N: 200
 
   params-set2:

@@ -2,7 +2,11 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Patch
 import matplotlib.patheffects as pe
 
-fig, ax = plt.subplots(figsize=(6,6))
+plt.rcParams['font.size'] = 16
+plt.rcParams['lines.linewidth'] = 2
+plt.rcParams['axes.labelsize'] = 21
+
+fig, ax = plt.subplots(figsize=(7, 7))
 
 # Axis limits
 x_min, x_max = 0, 3
@@ -41,26 +45,26 @@ ax.set_yticks([0, 1])
 ax.set_xlim(x_min, x_max)
 ax.set_ylim(y_min, y_max)
 ax.set_aspect('equal')
-ax.set_xlabel(r'$A$', fontsize=14)
-ax.set_ylabel(r'$\Delta$', fontsize=14)
+ax.set_xlabel(r'$|g|/\omega$')
+ax.set_ylabel(r'$|\Delta|/\omega$')
 # ax.set_title('Three regions in the first quadrant with hatched filling')
 
 # Legend
 legend_patches = [
-    Patch(facecolor='none', edgecolor='black', hatch='///', label=r'Region $C_1$: 0 < $A$ < 1'),
-    Patch(facecolor='none', edgecolor='black', hatch='\\\\\\', label=r'Region $C_2$: 0 < $\Delta$ < 1'),
-    Patch(facecolor='none', edgecolor='black', label=r'Region $C_3$: $A$ > 1, $\Delta$ > 1'),
-    Patch(facecolor='none', edgecolor='black', hatch='xxx', label=r'Region $C_0$=$C_1$$\cap$$C_2$'),
+    Patch(facecolor='none', edgecolor='black', hatch='///', label=r'Region I: 0 < $|g|$ < $\omega$'),
+    Patch(facecolor='none', edgecolor='black', hatch='\\\\\\', label=r'Region II: 0 < $|\Delta|$ < $\omega$'),
+    Patch(facecolor='none', edgecolor='black', label=r'Region III: $|g|$ > $\omega$, $|\Delta|$ > $\omega$'),
+    # Patch(facecolor='none', edgecolor='black', hatch='xxx', label=r'Region $C_0$=$C_1$$\cap$$C_2$'),
 ]
 
 # === Text labels with white outline ===
 outline = [pe.Stroke(linewidth=6, foreground='white'), pe.Normal()]
-ax.text(0.5, 0.5, r'$C_0$', ha='center', va='center', fontsize=16, fontweight='bold', path_effects=outline)
-ax.text(0.5, 1.5, r'$C_1$', ha='center', va='center', fontsize=16, fontweight='bold', path_effects=outline)
-ax.text(1.5, 0.5, r'$C_2$', ha='center', va='center', fontsize=16, fontweight='bold', path_effects=outline)
-ax.text(1.5, 1.5, r'$C_3$', ha='center', va='center', fontsize=16, fontweight='bold', path_effects=outline)
+ax.text(0.5, 1.5, r'I', ha='center', va='center', fontweight='bold', path_effects=outline)
+ax.text(1.5, 0.5, r'II', ha='center', va='center', fontweight='bold', path_effects=outline)
+ax.text(1.5, 1.5, r'III', ha='center', va='center', fontweight='bold', path_effects=outline)
+# ax.text(1.5, 1.5, r'$C_3$', ha='center', va='center', fontsize=16, fontweight='bold', path_effects=outline)
 
-ax.legend(handles=legend_patches, loc='upper right', fontsize=14)
+ax.legend(handles=legend_patches, loc='upper right')
 plt.tight_layout()
-plt.savefig('figures/limiting/param_regions.pdf', dpi=400)
-# plt.show()
+plt.savefig('./param_regimes.pdf', dpi=400)
+plt.show()

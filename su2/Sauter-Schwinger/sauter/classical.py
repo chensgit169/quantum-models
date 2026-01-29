@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 from tqdm import tqdm
 
-from exact_solution import A
+from sauter_pulse import sauter_pulse
 
 
 def velocity(t, p, e, tau):
     """ integrand for classical correlation function calculation """
-    p_kin = p + A(t, e, tau)
+    _, A = sauter_pulse(e, tau)
+    p_kin = p + A(t)
     E_p = np.sqrt(1 + p_kin ** 2)
     return p_kin / E_p
 
