@@ -1,26 +1,15 @@
 import numpy as np
 from typing import Callable
 from su2.common.pauli import s0, s
+from su2.common.utils import sinx_over_x
+
 
 """
-Two-level integrator based on analytic formula for su(2) exponent.
+Two-level integrator based on the Magnus expansion and analytic formula for su(2) exponent.
 
 last modified: 2026-Mar-11
 Chen
 """
-
-
-def sinx_over_x(x):
-    """Compute sin(x)/x safely for small x."""
-
-    x = np.asarray(x)
-
-    res = np.ones_like(x, dtype=float)
-
-    mask = np.abs(x) > 1e-8  # sinx/x = 1 - x^2/6 + x^4/120 + O(x^6)
-    res[mask] = np.sin(x[mask]) / x[mask]
-
-    return res
 
 
 def u_dt(t, dt, h: Callable, *args, order: int = 2):

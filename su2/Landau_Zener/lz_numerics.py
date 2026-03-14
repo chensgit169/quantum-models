@@ -30,6 +30,9 @@ def landau_zener_formula(v, d):
 
 
 def symmetry():
+    """
+    PT symmetry
+    """
     a = 0.3
     d = 1
 
@@ -76,7 +79,7 @@ def demo():
 
     print("final probability to stay: ", p_final,
           ", Landau-Zener formula: ", landau_zener_formula(a, d))
-    selected = (30 > ts) & (ts > 0)
+    selected = (30 > ts) & (ts > -100)
     plt.plot(ts[selected], p_t[selected])
     plt.show()
 

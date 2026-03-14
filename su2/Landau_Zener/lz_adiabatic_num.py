@@ -6,6 +6,10 @@ import numpy as np
 
 import os
 
+"""
+Solve the Landau-Zener model numerically in the adiabatic interaction picture.
+"""
+
 plt.rcParams['font.size'] = 14
 
 # d = 1

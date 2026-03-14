@@ -1,9 +1,7 @@
-import os
-
 import numpy as np
 from tqdm import tqdm
 
-from heuc import heun_p, heun_m
+from su2.common.math.heuc import heun_p, heun_m
 
 N = 1000  # default number of terms in series expansion
 
@@ -95,7 +93,6 @@ def demo_quasi_energy():
 
 def quasienergy_3d_plot():
     import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
 
     g_vals = np.linspace(0.01, 20, 200)
     d_vals = np.linspace(0.01, 20, 200)
