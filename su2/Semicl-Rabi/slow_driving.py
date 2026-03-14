@@ -6,6 +6,7 @@ from tqdm import tqdm
 from exact_solution import quasi_energy
 import yaml
 
+from su2.common.utils import sinx_over_x
 from su2.common.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
 
 
@@ -13,13 +14,6 @@ plt.rcParams['font.size'] = 14
 plt.rcParams['lines.linewidth'] = 2
 plt.rcParams['axes.labelsize'] = 21
 
-
-def sinx_over_x(x):
-    """Compute sin(x)/x safely for x near 0."""
-    res = np.ones_like(x)
-    mask = np.abs(x) > 1e-8
-    res[mask] = np.sin(x[mask]) / x[mask]
-    return res
 
 
 def g_func(t, a, d):
@@ -143,11 +137,10 @@ def magnus_symmetric():
     plt.legend(loc='best')
     plt.xlim(np.min(d_vals), np.max(d_vals))
     plt.tight_layout()
-    plt.savefig('figures/quasienergy/slow_driving/eps_magnus_symmetric_MA.pdf', dpi=400)
+    # plt.savefig('figures/quasienergy/slow_driving/eps_magnus_symmetric_MA.pdf', dpi=400)
     plt.show()
 
 
 if __name__ == '__main__':
     # adiabatic_limit()
     magnus_symmetric()
-

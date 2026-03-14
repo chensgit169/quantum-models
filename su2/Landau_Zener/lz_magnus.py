@@ -113,12 +113,11 @@ def demo(item='probability', recompute=False):
     c2_vals = data['c2']
     a3_vals = data['a3']
 
-    print(a1_vals[0], c2_vals[0], a3_vals[0])
+    plt.figure(figsize=(6, 4.5))
 
-    plt.figure(figsize=(8, 6))
+
 
     if item == 'probability':
-        plt.figure(figsize=(8, 6))
 
         p_exact = lz_p(a_vals)
         p_1st = np.sin(a1_vals) ** 2
@@ -127,7 +126,7 @@ def demo(item='probability', recompute=False):
         p_2nd = np.abs(u01_2nd) ** 2
         _, u01_3rd = u_mat(a1_vals, c2_vals, a3_vals)
         p_3rd = np.abs(u01_3rd) ** 2
-        plt.text(0.8, 0.9, '(a)', fontsize=24)
+        # plt.text(0.8, 0.9, '(a)', fontsize=24)
 
         # plt.plot(g_vals, p_1st, '--', label=r"1st Magnus", lw=1.2)
         # plt.plot(g_vals, p_2nd, ':', label=r"2nd Magnus", lw=1.2)
@@ -155,8 +154,7 @@ def demo(item='probability', recompute=False):
         phase_3rd = phase_approx(a1_vals + a3_vals, c2_vals)
         phase_exact = stokes_phase(a_vals)
 
-        plt.figure(figsize=(8, 6))
-        plt.text(1.2, 0.23, '(b)', fontsize=24)
+        # plt.text(1.2, 0.23, '(b)', fontsize=24)
         plt.plot([], [])
         # plt.plot(g_vals, phase_2nd / np.pi, ':', label=r"2nd Magnus", lw=1.2)
         # plt.plot(g_vals, phase_3rd / np.pi, '-.', label=r"3rd Magnus", lw=1.2)

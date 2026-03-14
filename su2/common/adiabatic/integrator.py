@@ -10,7 +10,7 @@ especially used for Sauter-Schwinger effect. The Hamiltonian is
          [A(t)+p, -1]]               [if*, 0]]
         (original basis)          (adiabatic basis)
                 
-where f = E(t)/(2(1+A(t)^2)) * exp(2i phi(t)), and
+where f = E(t)/(2(1+A(t)^2)) * exp(2i phi(t)), E(t) = -dA/dt, and
 
         phi(t) = ∫^t sqrt(1 + A(s)^2) ds.
                     
