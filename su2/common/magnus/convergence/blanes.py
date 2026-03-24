@@ -1,5 +1,5 @@
 from fractions import Fraction
-from bernoulli import bernoulli_fraction as bernoulli
+from _math.bernoulli import bernoulli_fraction as bernoulli
 from math import factorial, nan
 
 

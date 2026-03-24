@@ -1,4 +1,5 @@
 from su2.common.su2_integrator import u
+from magnus_1st import AdiabaticSolver
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,6 +12,8 @@ Rosen-Zener model solved in Schrödinger picture
 H = 1/2 * [[d, f(t)],
            [f(t), d]]
 where f(t) = g * sech(t/T), T=1 chosen as time unit. 
+
+Last updated: 2026-Mar-14
 """
 
 
@@ -20,7 +23,7 @@ psi_0 = np.array([0, 1])
 
 def h_landau_zener(t, g, d) -> np.ndarray:
     # Landau-Zener Hamiltonian
-    return np.array([g / np.cosh(t), 0, d]) / 2
+    return np.array([g / np.cosh(t), 0, d])
 
 
 def p_final_exact(g, d):
@@ -37,20 +40,30 @@ def p_final_numerical(g, d, t_lim=20, Nt=1000):
     return 1 - np.abs(amp_final) ** 2
 
 
+def p_magnus_1st(g, d, t_lim=20, Nt=1000):
+    solver = AdiabaticSolver(g, d)
+    t_vals = np.linspace(-t_lim, t_lim, Nt)
+    beta_magnus = solver.wkb_psi_tp(t_vals)['beta']
+    return np.abs(beta_magnus[-1]) ** 2
+
+
 def demo_pulse_area():
     """
     demonstrate the dependence of transition probability on pulse area g,
     """
-    d = 1
+    d = 0.1
 
-    g_vals = np.linspace(0, 5, 50)
+    g_vals = np.linspace(0, 10, 200)
 
     p_exact = p_final_exact(g_vals, d)
     p_numerical = np.array([p_final_numerical(g, d) for g in tqdm(g_vals)])
+    p_wkb = np.array([p_magnus_1st(g, d) for g in tqdm(g_vals)])
 
     plt.figure(figsize=(6, 4.5))
     plt.plot(g_vals, p_exact, label='Exact')
     plt.plot(g_vals, p_numerical, 'o', label='Numerical', color='red')
+    # plt.plot(g_vals, p_wkb, 'x-', label='Magnus 1st')
+
     plt.xlabel(r'$g$')
     plt.ylabel(r'$P$')
     plt.title(f'Transition Probability vs g, d={d}')
@@ -84,5 +97,5 @@ def demo_detuning():
 
 
 if __name__ == '__main__':
-    # demo_pulse_area()
-    demo_detuning()
+    demo_pulse_area()
+    # demo_detuning()

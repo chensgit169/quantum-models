@@ -6,9 +6,10 @@ from scipy.integrate import trapezoid
 from scipy.special import gamma
 from tqdm import tqdm
 
-from su2.common.magnus.magnus_su2 import a3_integral, c2_integral
+from su2.common.magnus import a3_integral, c2_integral
+from su2.common.paper_style import set_paper_style
+from su2.common import sinx_over_x, su2_exp
 
-plt.rcParams['font.size'] = 16
 
 """
 Magnus expansion for Landau-Zener non-adiabatic transition problem.
@@ -16,11 +17,14 @@ Magnus expansion for Landau-Zener non-adiabatic transition problem.
 Last updated: Nov. 2nd, 2025
 """
 
+set_paper_style()
+
+
 data_filename = 'data/magnus_lz.npz'
 
-plt.rcParams['font.size'] = 14
-plt.rcParams['lines.linewidth'] = 2
-plt.rcParams['axes.labelsize'] = 21
+# plt.rcParams['font.size'] = 14
+# plt.rcParams['lines.linewidth'] = 2
+# plt.rcParams['axes.labelsize'] = 21
 
 
 ############################
@@ -81,15 +85,7 @@ def a3_imag(alpha, S=12, N=4000):
 def u_mat(a1, c2=0, a3=0):
     a = 1j * (a1 + a3)
     c = c2
-    theta = np.sqrt(np.abs(a) ** 2 + c ** 2)
-
-    ratio = np.ones_like(theta)
-    mask = theta >= 1e-12
-    ratio[mask] = np.sin(theta[mask]) / theta[mask]
-
-    beta = -1j * a * ratio
-    alpha = np.cos(theta) - 1j * c * ratio
-    return alpha, beta
+    return su2_exp(a, c)
 
 
 def compute():

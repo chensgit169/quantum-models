@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 from su2.common.su2_integrator import u
 from exact_solution import quasi_energy
@@ -6,12 +7,12 @@ from exact_solution import quasi_energy
 """
 Solve semiclassical Rabi model numerically.
 
-Last modified: 2026-Mar-11
+Last modified: 2026-Mar-18
 """
 
 
 def h_rabi(t, d, g, omega=1):
-    return np.array([g * np.cos(omega * t), 0.0, d]) / 2
+    return np.array([g * np.cos(omega * t), 0.0, d])
 
 
 def quasienergy_num(d, g, N=1000):
@@ -30,11 +31,13 @@ def eps_plot(d, N):
 
     import matplotlib.pyplot as plt
 
-    g_vals = np.linspace(2.0913633942, 2.0913633943, 50)
+    g_vals = np.linspace(2.091363394275, 2.091363394280, 50)
+
+    # g_vals = np.linspace(0.1, 3, 50)
 
     eps_all = []
 
-    for g in g_vals:
+    for g in tqdm(g_vals):
         qe = quasienergy_num(d, g, N)
         eps_all.append(qe)
 
@@ -49,7 +52,7 @@ def eps_plot(d, N):
 
     # Plot
     plt.plot(g_vals, eps_exact, label='Exact')
-    plt.plot(g_vals, eps_all[:, 0], label=r'$\epsilon_1$')
+    plt.plot(g_vals, eps_all[:, 0], '*', label=r'$\epsilon_1$')
     plt.plot(g_vals, eps_all[:, 1], label=r'$\epsilon_2$')
     plt.xlabel(r'$g$')
     plt.ylabel('Quasienergy')
@@ -61,4 +64,4 @@ def eps_plot(d, N):
 
 
 if __name__ == '__main__':
-    eps_plot(d=1, N=1000)
+    eps_plot(d=1, N=2000)

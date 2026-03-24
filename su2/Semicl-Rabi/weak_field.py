@@ -4,12 +4,15 @@ import yaml
 from tqdm import tqdm
 
 from exact_solution import quasi_energy
-from su2.common.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral, sinx_over_x
+from su2.common.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
+from su2.common import sinx_over_x
+from su2.common.paper_style import set_paper_style
 
-plt.rcParams['font.size'] = 14
-plt.rcParams['lines.linewidth'] = 2
-plt.rcParams['axes.labelsize'] = 21
+# plt.rcParams['font.size'] = 14
+# plt.rcParams['lines.linewidth'] = 2
+# plt.rcParams['axes.labelsize'] = 21
 
+set_paper_style()
 
 param_sets = yaml.safe_load(open('data/params.yaml', 'r'))['weak_field']
 

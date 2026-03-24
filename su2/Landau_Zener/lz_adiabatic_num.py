@@ -13,7 +13,7 @@ Solve the Landau-Zener model numerically in the adiabatic interaction picture.
 plt.rcParams['font.size'] = 14
 
 # d = 1
-v = 0.01
+v = 0.2
 g = 1 / (2 * v)
 p_exact = np.exp(-2 * np.pi * g)
 
@@ -29,7 +29,7 @@ data_filename = f'data/d=1_v={v:.3f}.npz'
 recompute = True
 
 if not os.path.exists(data_filename) or recompute:
-    ts = np.linspace(-20, 30, 100000) / np.sqrt(v)
+    ts = np.linspace(-400, 400, 200000) / np.sqrt(v/2)
 
     data = evolve(ts, A, E)
 
@@ -49,7 +49,7 @@ else:
     phi_vals = data['phi_vals']
 
 ts_demo = ts * np.sqrt(v)
-demo_mask = (ts_demo >= 24) & (ts_demo <= 200)
+demo_mask = (ts_demo >= -1) & (ts_demo <= 200)
 
 
 phi_wrapped = np.angle(np.exp(-2j * phi_vals)/1j)
@@ -83,8 +83,12 @@ def demo_phase():
 
 def demo_prob():
     plt.figure(figsize=(8, 5))
-    plt.plot(ts_demo, np.abs(beta_vals) ** 2, label=r'$|\beta(t)|^2$')
+    p = np.abs(beta_vals) ** 2
+
+    plt.plot(ts_demo, p, label=r'$|\beta(t)|^2$')
     plt.axhline(p_exact, color='k', linestyle='--', label='Exact $P_{LZ}$')
+
+    print(f'Final numerical probability: {p[-1]}, Exact probability: {p_exact}')
     plt.xlabel(r'$\tau=\sqrt{v}r$')
     plt.ylabel(r'$\beta(t)$')
     plt.title(f'Time Evolution of β(t) at p=0, g={g}')
@@ -124,8 +128,8 @@ def show_xy_trajectory():
 
 
 if __name__ == '__main__':
-    # demo_prob()
-    demo_phase()
+    demo_prob()
+    # demo_phase()
     # demo_coeff()
     # make_bloch_movie()
     # show_xy_trajectory()

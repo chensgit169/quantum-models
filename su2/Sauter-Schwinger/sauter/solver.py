@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.integrate import cumulative_trapezoid, trapezoid
 
-from su2.common.adiabatic.adiabatic_picture import eta_by_integral, su2_exp
+from su2.common.adiabatic.adiabatic_picture import eta_by_integral_sw
 from su2.common.adiabatic.integrator import evolve
+from su2.common.utils import su2_exp
 
 from sauter_pulse import sauter_pulse
 
@@ -26,7 +27,7 @@ class SauterSchwingerSolver:
         # TODO: optimize ts used to to integration
         def omega(t): return self.omega_p(t, p)
 
-        eta_vals = eta_by_integral(ts, self.E_func, omega)
+        eta_vals = eta_by_integral_sw(ts, self.E_func, omega)
 
         a1_vals = cumulative_trapezoid(eta_vals, ts, initial=0.0)
 
@@ -76,7 +77,7 @@ class DoubleSauter(SauterSchwingerSolver):
             def omega(t):
                 return self.omega_p(t, p)
 
-            eta_vals = eta_by_integral(ts, self.E_func, omega)
+            eta_vals = eta_by_integral_sw(ts, self.E_func, omega)
             a1_vals = trapezoid(eta_vals, ts)
             alpha, beta = su2_exp(a1_vals)
             psi = np.array([alpha, beta])
