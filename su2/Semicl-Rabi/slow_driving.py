@@ -7,7 +7,7 @@ from exact_solution import quasi_energy
 import yaml
 
 from su2.common.utils import sinx_over_x
-from su2.common.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
+from su2.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
 
 
 plt.rcParams['font.size'] = 14

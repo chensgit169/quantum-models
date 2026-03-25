@@ -3,9 +3,8 @@ import numpy as np
 from scipy.integrate import cumulative_trapezoid
 
 
-from adiabatic_picture import h_num, chi_dot, v_func_num
+from adiabatic_picture import h_num, v_func_num
 from su2.common.su2_integrator import make_h_interp, evolve
-from su2.common.magnus import a1_integral, c2_integral, a3_integral
 
 
 def f_lz(t, v):

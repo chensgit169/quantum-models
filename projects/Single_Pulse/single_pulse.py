@@ -1,10 +1,9 @@
 import numpy as np
 
-from su2.common.su2_integrator import u
 from adiabatic_picture import v_func_num
-from su2.common.magnus import a1_integral, c2_integral, a3_integral
 from su2.common import su2_exp
-
+from su2.common.su2_integrator import u
+from su2.magnus import magnus_su2
 
 """
 Single pulse model
@@ -24,15 +23,11 @@ class SinglePulse:
         self.f_dot_func = f_dot_func
 
 
-
-
 def p_magnus_approx(f, f_dot, d, *args, t_lim=20, N=1000, order=1):
     ts = np.linspace(-t_lim, t_lim, N)
     v_vals = v_func_num(ts, f, f_dot, d, args)
 
-    A1 = a1_integral(v_vals, ts[0], ts[-1], N=N)
-    C2 = c2_integral(v_vals, ts[0], ts[-1], N=N)
-    A3 = a3_integral(v_vals, ts[0], ts[-1], N=N)
+    A1, C2, A3 = magnus_su2(v_vals, ts[0], ts[-1], *args, N=N, order=order)
 
     _, beta_1st = su2_exp(A1, 0)
     p_1st = np.abs(beta_1st) ** 2

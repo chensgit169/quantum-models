@@ -46,17 +46,17 @@ def demo_exact():
     """
     demonstrate the dependence of transition probability on pulse area g,
     """
-    d = 1
+    d = 10
 
-    g_vals = np.linspace(40, 80, 100)
+    g_vals = np.linspace(40, 80, 300)
 
     p_numerical = np.array([p_final(f_gauss, d, g) for g in tqdm(g_vals)])
     p_1st, p_2nd, p_3rd = np.array([p_magnus_approx(f_gauss, f_dot_gauss, d, g, order=3) for g in tqdm(g_vals)]).T
 
     plt.plot(g_vals, p_numerical, 'o', label='Numerical', color='red')
-    plt.plot(g_vals, p_2nd, '-', label='Magnus 2nd', color='green')
-    plt.plot(g_vals, p_1st, 'x-', label='Magnus 1st', color='blue')
-    plt.plot(g_vals, p_3rd, '-.', label='Magnus 3rd', color='orange')
+    plt.plot(g_vals, p_1st, '--', label='Magnus 1st', color='blue')
+    plt.plot(g_vals, p_2nd, ':', label='Magnus 2nd', color='green')
+    plt.plot(g_vals, p_3rd, '-', label='Magnus 3rd', color='orange')
 
     plt.xlim(min(g_vals), max(g_vals))
     plt.xlabel(r'$g$')
@@ -69,5 +69,5 @@ def demo_exact():
 
 
 if __name__ == '__main__':
-    # demo_exact()
-    exact_data()
+    demo_exact()
+    # exact_data()

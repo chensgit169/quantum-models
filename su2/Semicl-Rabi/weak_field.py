@@ -4,7 +4,7 @@ import yaml
 from tqdm import tqdm
 
 from exact_solution import quasi_energy
-from su2.common.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
+from su2.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
 from su2.common import sinx_over_x
 from su2.common.paper_style import set_paper_style
 

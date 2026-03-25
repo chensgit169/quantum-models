@@ -1,5 +1,3 @@
-import os
-
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.special import j0
@@ -7,7 +5,7 @@ from tqdm import tqdm
 import yaml
 
 from exact_solution import quasi_energy
-from su2.common.magnus.magnus_su2 import a1_integral, c2_integral, a3_integral
+from su2.magnus.magnus_su2 import a1_integral, c2_integral, a3_integral
 from su2.common.utils import sinx_over_x
 
 plt.rcParams['font.size'] = 14

@@ -6,7 +6,7 @@ from scipy.special import j0
 from tqdm import tqdm
 
 from su2.common.test.root import find_roots
-from su2.common.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
+from su2.magnus.magnus_su2 import a3_integral
 from exact_solution import quasi_energy
 
 plt.rcParams['font.size'] = 14

@@ -25,6 +25,11 @@ def bernoulli_fraction(n):
     return bf
 
 
+def bernoulli_float(n):
+    """obtain Bernoulli numbers as floats"""
+    return float(bernoulli_fraction(n))
+
+
 def expansion():
     """
     verify x/(exp(x)-1) = sum_n=0 B_n * x**n / n!
