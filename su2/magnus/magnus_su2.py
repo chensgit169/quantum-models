@@ -110,14 +110,14 @@ def magnus_su2_complex(v_func, u_func, ti, tf, *args, N=400, order=3):
     return res
 
 
-def a1_integral(v: Union[np.ndarray, Callable], ti, tf, *args, N=400):
+def _a1_integral(v: Union[np.ndarray, Callable], ti, tf, *args, N=400):
     t = np.linspace(ti, tf, N)
     v_vals = _evaluate(t, v, *args)
 
     return trapezoid(v_vals, t)
 
 
-def c2_integral(v: Union[np.ndarray, Callable], ti, tf, *args, N=400):
+def _c2_integral(v: Union[np.ndarray, Callable], ti, tf, *args, N=400):
     t = np.linspace(ti, tf, N)
     f_vals = _evaluate(t, v, *args)
 
@@ -130,7 +130,7 @@ def c2_integral(v: Union[np.ndarray, Callable], ti, tf, *args, N=400):
     return total
 
 
-def a3_integral(v: Union[np.ndarray, Callable], ti, tf, *args, N=400):
+def _a3_integral(v: Union[np.ndarray, Callable], ti, tf, *args, N=400):
     """
     Computes the triple integral for the third-order Magnus expansion term:
 
@@ -185,11 +185,11 @@ def _check_version():
     vs = np.exp(1.2j * ts)
     A1, C2, A3 = magnus_su2(vs, 0, 10, N=20000)
     print('done')
-    A1_old = a1_integral(vs, 0, 10, N=20000)
+    A1_old = _a1_integral(vs, 0, 10, N=20000)
     print(A1 - A1_old)
-    C2_old = c2_integral(vs, 0, 10, N=20000)
+    C2_old = _c2_integral(vs, 0, 10, N=20000)
     print(C2 - C2_old)
-    A3_old = a3_integral(vs, 0, 10, N=20000)
+    A3_old = _a3_integral(vs, 0, 10, N=20000)
 
     print(A3 - A3_old)
 

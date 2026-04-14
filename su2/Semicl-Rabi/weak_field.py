@@ -4,21 +4,26 @@ import yaml
 from tqdm import tqdm
 
 from exact_solution import quasi_energy
-from su2.magnus.magnus_su2 import a3_integral, a1_integral, c2_integral
 from su2.common import sinx_over_x
-from su2.common.paper_style import set_paper_style
+from su2.magnus import magnus_su2
 
 # plt.rcParams['font.size'] = 14
 # plt.rcParams['lines.linewidth'] = 2
 # plt.rcParams['axes.labelsize'] = 21
 
-set_paper_style()
 
-param_sets = yaml.safe_load(open('data/params.yaml', 'r'))['weak_field']
+def load_params(which: int = 1):
+    param_sets = yaml.safe_load(open('data/params.yaml', 'r'))['weak_field']
+    params = param_sets['params-set' + str(which)]
+    g = params['g']
+    d = params['d']
+    d_min, d_max, num_d = d['min'], d['max'], d['N']
+    d_vals = np.linspace(d_min, d_max, num_d)
+    return g, d_vals
 
 
-def v(t, _a, _d):
-    return _a * np.sin(t) * np.exp(1j * _d * t) / 2
+def v_g(t, _g, _d):
+    return _g * np.sin(t) * np.exp(1j * _d * t) / 2
 
 
 def demo_exact_eps():
@@ -94,11 +99,7 @@ def plot_results(g, d_vals, e_vals, approx_1st, approx_2nd, approx_3rd):
 
 
 def direct_magnus():
-    params = param_sets['params-set2']
-    g = params['g']
-    d = params['d']
-    d_min, d_max, num_d = d['min'], d['max'], d['N']
-    d_vals = np.linspace(d_min, d_max, num_d)
+    g, d_vals = load_params(2)
 
     e_vals = np.array([quasi_energy(g, d) for d in tqdm(d_vals)])
 
@@ -110,9 +111,7 @@ def direct_magnus():
         return approx
 
     # approximation for small field
-    a1_m = np.array([a1_integral(v, -np.pi, 1 * np.pi, g, d) for d in d_vals])
-    c2_m = np.array([c2_integral(v, -np.pi, 1 * np.pi, g, d) for d in d_vals])
-    a3_m = np.array([a3_integral(v, -np.pi, 1 * np.pi, g, d) for d in d_vals])
+    a1_m, c2_m, a3_m = np.array([magnus_su2(v_g, -np.pi, np.pi, g, d) for d in d_vals]).T
 
     print(np.max(np.abs(np.real(a1_m))))
     print(np.max(np.abs(np.real(a3_m))))
@@ -146,19 +145,11 @@ def magnus_explicit_symmetry():
         eps = np.arcsin(sin_eps_pi.astype(complex)).real / np.pi
         return eps
 
-    params = param_sets['params-set1']
-    g = params['g']
-    d = params['d']
-    d_min, d_max, num_d = d['min'], d['max'], d['N']
-
-    d_vals = np.linspace(d_min, d_max, num_d)
-
+    g, d_vals = load_params(1)
     e_vals = np.array([quasi_energy(g, d) for d in tqdm(d_vals)])
 
     # approximation for small field
-    a1_m = np.array([a1_integral(v, 0, np.pi, g, d) for d in d_vals])
-    c2_m = np.array([c2_integral(v, 0, np.pi, g, d) for d in d_vals])
-    a3_m = np.array([a3_integral(v, 0, np.pi, g, d) for d in d_vals])
+    a1_m, c2_m, a3_m = np.array([magnus_su2(v_g, 0, np.pi, g, d) for d in d_vals]).T
 
     approx_1st = eps_wf(a1_m, 0)
     approx_2nd = eps_wf(a1_m, c2_m)
@@ -168,7 +159,6 @@ def magnus_explicit_symmetry():
 
     plot_results(g, d_vals, e_vals, approx_1st, approx_2nd, approx_3rd)
 
-    # plt.text(0.65, 0.4, '(b)', fontsize=24)
     plt.savefig("figures/quasienergy/weak_field/"
                 + f"explicit_symmetric_g={g}_MA.pdf", dpi=400)
     plt.show()

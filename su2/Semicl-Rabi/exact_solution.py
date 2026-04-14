@@ -3,6 +3,7 @@ from tqdm import tqdm
 
 from su2.common.math.heuc import heun_p, heun_m
 
+
 N = 1000  # default number of terms in series expansion
 
 

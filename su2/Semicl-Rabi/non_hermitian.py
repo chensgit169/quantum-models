@@ -7,9 +7,13 @@ from su2.magnus import magnus_su2_complex
 
 plt.rcParams['font.size'] = 14
 
+# TODO: the present calculation diverges
+
 """
 Replace g -> ig in the Rabi model, and see the exceptional point 
 where the quasienergy becomes complex.
+
+Last modified: 2026-Mar-18
 """
 
 

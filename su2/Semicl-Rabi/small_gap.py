@@ -1,34 +1,31 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import yaml
 from scipy.special import j0
 from tqdm import tqdm
-import yaml
 
 from exact_solution import quasi_energy
-from su2.magnus.magnus_su2 import a1_integral, c2_integral, a3_integral
 from su2.common.utils import sinx_over_x
+from su2.magnus import magnus_su2
 
 plt.rcParams['font.size'] = 14
 plt.rcParams['lines.linewidth'] = 2
 plt.rcParams['axes.labelsize'] = 21
 
 
+def load_params(which: int = 1):
+    param_sets = yaml.safe_load(open('data/params.yaml', 'r'))['small_gap']
 
-param_sets = yaml.safe_load(open('data/params.yaml', 'r'))['small_gap']
-
-
-def load_params():
-    params = param_sets['params-set1']
+    params = param_sets['params-set'+str(which)]
     g = params['g']
     d = params['d']
     g_min, g_max, num_g = g['min'], g['max'], g['N']
 
     g_vals = np.linspace(g_min, g_max, num_g)
-    e_vals = np.array([quasi_energy(f, d, real_only=False).real for f in tqdm(g_vals)])
     return d, g_vals
 
 
-def v(t, g, d):
+def v_d(t, g, d):
     return d * np.exp(1j * g * np.sin(t)) / 2
 
 
@@ -69,10 +66,7 @@ def direct_magnus():
         return approx
 
     # compute third order correction
-
-    a1_m = np.array([a1_integral(v, 0, 2 * np.pi, g, d) for g in g_vals])
-    c2_m = np.array([c2_integral(v, 0, 2 * np.pi, g, d) for g in g_vals])
-    a3_m = np.array([a3_integral(v, 0, 2 * np.pi, g, d) for g in g_vals])
+    a1_m, c2_m, a3_m = np.array([magnus_su2(v_d, 0, 2 * np.pi, g, d) for g in g_vals]).T
 
     # approx_1st = d * j0(g_vals) / 2
 
@@ -102,12 +96,7 @@ def direct_magnus():
 def magnus_explicit_symmetry(show_minus_eps=False):
     d, g_vals = load_params()
 
-    # g_vals = np.linspace(g_min, g_max, num_g)
     e_vals = np.array([quasi_energy(f, d, real_only=False).real for f in tqdm(g_vals)])
-
-    # plt.figure(figsize=(4, 3))
-
-    # plt.plot(f_vals, e_vals + 1, color=line_main[0].get_color())
 
     def eps_sg(a_m, c_m):
         theta_m = np.sqrt(np.abs(a_m) ** 2 + np.abs(c_m) ** 2)
@@ -115,14 +104,12 @@ def magnus_explicit_symmetry(show_minus_eps=False):
         return np.arcsin(r) / np.pi
 
     # approximation for small field
-    a1_m = np.array([a1_integral(v, 0, np.pi, g, d) for g in g_vals])
-    c2_m = np.array([c2_integral(v, 0, np.pi, g, d) for g in g_vals])
-    a3_m = np.array([a3_integral(v, 0, np.pi, g, d) for g in g_vals])
+    a1_m, c2_m, a3_m = np.array([magnus_su2(v_d, 0, np.pi, g, d) for g in g_vals]).T
 
     # check the imaginary part of A_n
-    print(a1_m)
-    print(np.max(np.abs(np.imag(a1_m))))
-    print(np.max(np.abs(np.imag(a3_m))))
+    # print(a1_m)
+    # print(np.max(np.abs(np.imag(a1_m))))
+    # print(np.max(np.abs(np.imag(a3_m))))
 
     approx_1st = eps_sg(a1_m, 0)
     approx_2nd = eps_sg(a1_m, c2_m)

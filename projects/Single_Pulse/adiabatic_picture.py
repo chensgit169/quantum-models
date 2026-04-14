@@ -42,7 +42,7 @@ def chi_dot(ts: np.ndarray,
     d_vals = _evaluate(ts, d, *arg)
     f_vals = _evaluate(ts, f, *arg)
 
-    eta_vals = (fp_vals * d_vals - dp_vals * f_vals) / (d_vals ** 2 + f_vals ** 2)
+    eta_vals = (fp_vals * d_vals - dp_vals * f_vals) / (d_vals ** 2 + f_vals ** 2 + 1e-15)
 
     return eta_vals
 

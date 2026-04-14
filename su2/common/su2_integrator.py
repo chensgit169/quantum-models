@@ -55,7 +55,6 @@ def evolve(psi0, t, t0, N, h, *args, order=4):
     psi = psi0.copy()
 
     dt = (t - t0) / N
-    ut = s0.copy()
     tk = t0
 
     for _ in range(N):
