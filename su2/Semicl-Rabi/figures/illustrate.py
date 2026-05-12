@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Patch
 import matplotlib.patheffects as pe
 
-plt.rcParams['font.size'] = 16
+plt.rcParams['font.size'] = 21
 plt.rcParams['lines.linewidth'] = 2
-plt.rcParams['axes.labelsize'] = 21
+plt.rcParams['axes.labelsize'] = 24
 
 fig, ax = plt.subplots(figsize=(7, 7))
 

@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 import yaml
 from scipy.special import j0
@@ -8,9 +9,17 @@ from exact_solution import quasi_energy
 from su2.common.utils import sinx_over_x
 from su2.magnus import magnus_su2
 
-plt.rcParams['font.size'] = 14
-plt.rcParams['lines.linewidth'] = 2
-plt.rcParams['axes.labelsize'] = 21
+mpl.rcParams.update({
+    "font.size": 24,
+    "axes.labelsize": 26,
+    "legend.fontsize": 21,
+    "xtick.labelsize": 24,
+    "ytick.labelsize": 24,
+    "lines.linewidth": 3,
+    "lines.markersize": 6,
+    "axes.linewidth": 2,
+    "figure.dpi": 300,
+})
 
 
 def load_params(which: int = 1):
@@ -34,16 +43,18 @@ def demo_exact_eps():
 
     ds = [0.9, 1.0, 1.1]
     styles = ['--', '-', ':']
+    plt.figure(figsize=(10, 7.5))
     for d, style in zip(ds, styles):
         e_vals = np.array([quasi_energy(g, d, real_only=False).real for g in g_vals])
         line_mian = plt.plot(g_vals, e_vals, style, label=r'$\Delta/\omega$' + f'={d}')
         plt.plot(g_vals, 1 - e_vals, style, color=line_mian[0].get_color())
 
+    plt.axhline(0.5, color='gray', linestyle='--', alpha=0.3)
+
     plt.xlabel(r'$g/\omega$')
     plt.ylabel(r'$\epsilon/\omega$')
     # plt.title(r'Exact Rabi Quasienergy for $\Delta=$' + f'{d}')
     # plt.xlim(np.min(d_vals), np.max(d_vals))
-    # plt.hlines(y=-0.5, xmin=np.min(d_vals), xmax=np.max(d_vals), colors='gray', linestyles='dashed', alpha=0.5)
 
     plt.legend()
     plt.tight_layout()
@@ -52,11 +63,9 @@ def demo_exact_eps():
 
 
 def direct_magnus():
-    d, g_vals = load_params()
+    d, g_vals = load_params(4)
     e_vals = np.array([quasi_energy(f, d, real_only=False).real for f in tqdm(g_vals)])
 
-    line_main = plt.plot(g_vals, e_vals, label='Exact')
-    plt.plot(g_vals, -e_vals, color=line_main[0].get_color())
 
     # plt.plot(f_vals, e_vals + 1, color=line_main[0].get_color())
 
@@ -75,19 +84,24 @@ def direct_magnus():
     approx_3rd = eps_sg(a1_m + a3_m, c2_m)
     plt.axhline(0.5, color='gray', linestyle='--')
 
+    plt.figure(figsize=(10, 7.5))
     plt.plot(g_vals, d / 2 * j0(g_vals),
              '--', label=r'$\frac{\Delta}{2}J_0(\frac{g}{\omega})$')
-    plt.plot(g_vals, approx_1st, '--', label=r'FMA')
-    plt.plot(g_vals, approx_2nd, ':', label=r'SMA')
-    plt.plot(g_vals, approx_3rd, '-.', label=r'TMA')
+    plt.plot(g_vals, approx_1st, '--', label=r'1st-order')
+    plt.plot(g_vals, approx_2nd, ':', label=r'2nd-order')
+    plt.plot(g_vals, approx_3rd, '-.', label=r'3rd-order')
+
+    line_main = plt.plot(g_vals, e_vals, 'k',  label='Exact')
+    plt.plot(g_vals, -e_vals, color=line_main[0].get_color())
 
     # plt.figure(figsize=(6, 4))
     plt.xlabel(r'$g/\omega$')
     plt.ylabel(r'$\epsilon/\omega$')
     plt.xlim(np.min(g_vals), np.max(g_vals))
     # plt.title(r'$\Delta$=' + f'{d}')
-    plt.axhline(0, color='gray', linestyle='--')
-    plt.legend()
+    plt.axhline(0.5, color='gray', linestyle='--', alpha=0.3)
+    plt.axhline(0.0, color='gray', linestyle='--', alpha=0.3)
+    plt.legend(loc='lower left')
     plt.tight_layout()
     plt.savefig('figures/quasienergy/small_gap/divergent_demo.pdf', dpi=400)
     plt.show()
@@ -115,12 +129,13 @@ def magnus_explicit_symmetry(show_minus_eps=False):
     approx_2nd = eps_sg(a1_m, c2_m)
     approx_3rd = eps_sg(a1_m + a3_m, c2_m)
 
+    plt.figure(figsize=(10, 7.5))
     plt.plot(g_vals, d / 2 * j0(g_vals),
              '--', label=r'$\frac{\Delta}{2}J_0(\frac{g}{\omega})$')
     # plt.plot(g_vals, approx_1st, '--', label=r'FMA')
-    plt.plot(g_vals, approx_2nd, ':', label=r'FMA=SMA')
-    plt.plot(g_vals, approx_3rd, '-.', label=r'TMA')
-    # plt.axhline(0, color='gray', linestyle='--')
+    plt.plot(g_vals, approx_2nd, ':', label=r'1st/2nd-order')
+    plt.plot(g_vals, approx_3rd, '-.', label=r'3rd-order')
+    plt.axhline(0.0, color='gray', linestyle='--', alpha=0.3)
 
     line_main = plt.plot(g_vals, e_vals, label='Exact', color='k')
     if show_minus_eps:
@@ -130,13 +145,13 @@ def magnus_explicit_symmetry(show_minus_eps=False):
     # plt.grid(True, alpha=0.3)
 
     plt.xlim(np.min(g_vals), np.max(g_vals))
-    plt.xlabel(r'$g/\omega$', fontsize=21)
-    plt.ylabel(r'$\epsilon/\omega$', fontsize=21)
+    plt.xlabel(r'$g/\omega$')
+    plt.ylabel(r'$\epsilon/\omega$')
     # plt.title(r'Rabi Quasienergy $\Delta=$' + f'{d}')
     plt.legend()
     plt.tight_layout()
     plt.savefig("figures/quasienergy/small_gap/"
-                + f"explicit_symmetric_d={d}_MA.pdf", dpi=400)
+                + f"explicit_symmetric_d={d}.eps", dpi=400)
     plt.show()
 
 

@@ -6,7 +6,6 @@ from su2.common.math.heuc import heun_p, heun_m
 
 N = 1000  # default number of terms in series expansion
 
-
 def z(t):
     return np.sin(t / 2) ** 2
 
@@ -115,6 +114,8 @@ def quasienergy_3d_plot():
     ax.set_title('Quasi-energy in Rabi Model')
 
     plt.show()
+
+
 
 
 if __name__ == '__main__':
