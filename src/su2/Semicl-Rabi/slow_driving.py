@@ -10,6 +10,14 @@ from exact_solution import quasi_energy
 from su2.common.utils import sinx_over_x
 from su2.magnus import magnus_su2
 
+from pathlib import Path
+
+# path setting
+file_path = Path(__file__).parent
+data_path = file_path / "data" / "params.yaml"
+img_folder = file_path / "figures" / "quasienergy" / "slow_driving"
+if not img_folder.exists():
+    img_folder.mkdir(parents=True)
 
 mpl.rcParams.update({
     "font.size": 16,
@@ -25,7 +33,7 @@ mpl.rcParams.update({
 
 
 def load_params(which: int = 1):
-    param_sets = yaml.safe_load(open('data/params.yaml'))['slow_driving']
+    param_sets = yaml.safe_load(open(data_path, 'r'))['slow_driving']
     params = param_sets['params-set'+str(which)]
     g_min, g_max = params['g']['min'], params['g']['max']
     g_vals = np.linspace(g_min, g_max, 400)
@@ -111,7 +119,7 @@ def magnus_symmetric():
     plt.legend(loc='best')
     plt.xlim(np.min(g_vals), np.max(g_vals))
     plt.tight_layout()
-    # plt.savefig('figures/quasienergy/slow_driving/eps_magnus_symmetric_MA.pdf', dpi=400)
+    plt.savefig(img_folder/'eps_magnus_symmetric_MA.pdf', dpi=400)
     plt.show()
 
 
@@ -165,7 +173,7 @@ def two_dim_plot():
     fig.colorbar(im2, ax=axes[2])
 
     plt.tight_layout()
-    plt.savefig('figures/quasienergy/slow_driving/magnus_2d_comparison.pdf', dpi=400)
+    plt.savefig(img_folder/'magnus_2d_comparison.pdf', dpi=400)
     plt.show()
 
 
@@ -222,7 +230,7 @@ def magnus_symmetric_comparison():
 
     # Adjust layout and save
     plt.tight_layout()
-    plt.savefig('figures/quasienergy/slow_driving/magnus_symmetric_comparison.pdf', dpi=400)
+    plt.savefig(img_folder/'magnus_symmetric_comparison.pdf', dpi=400)
     plt.show()
 
 

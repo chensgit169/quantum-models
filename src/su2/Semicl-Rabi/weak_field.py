@@ -4,13 +4,18 @@ import numpy as np
 import yaml
 from tqdm import tqdm
 
-from exact_solution import quasi_energy
 from su2.common import sinx_over_x
 from su2.magnus import magnus_su2
+from exact_solution import quasi_energy
 
-# plt.rcParams['font.size'] = 14
-# plt.rcParams['lines.linewidth'] = 2
-# plt.rcParams['axes.labelsize'] = 21
+from pathlib import Path
+
+# path setting
+file_path = Path(__file__).parent
+data_path = file_path / "data" / "params.yaml"
+img_folder = file_path / "figures" / "quasienergy" / "weak_field"
+if not img_folder.exists():
+    img_folder.mkdir(parents=True)
 
 mpl.rcParams.update({
     # "font.family": "serif",
@@ -27,7 +32,7 @@ mpl.rcParams.update({
 
 
 def load_params(which: int = 1):
-    param_sets = yaml.safe_load(open('data/params.yaml', 'r'))['weak_field']
+    param_sets = yaml.safe_load(open(data_path, 'r'))['weak_field']
     params = param_sets['params-set' + str(which)]
     g = params['g']
     d = params['d']
@@ -68,7 +73,7 @@ def demo_exact_eps():
     plt.text(2, 0.4, '(a)', fontsize=24)
     # plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig('figures/quasienergy/exact_demo/demo_quasienergy_g=1.pdf', dpi=300)
+    plt.savefig(img_folder / 'exact_demo_g=1.pdf', dpi=300)
     plt.show()
 
 
@@ -129,8 +134,7 @@ def direct_magnus():
 
     plt.text(0.65, 0.4, '(a)', fontsize=24)
 
-    plt.savefig("figures/quasienergy/weak_field/"+
-                f"direct_magnus_g={g}_avoided_crossing.pdf", dpi=400)
+    plt.savefig(img_folder/f"direct_magnus_g={g}_avoided_crossing.pdf", dpi=400)
     plt.show()
 
 
@@ -157,8 +161,7 @@ def magnus_explicit_symmetry():
 
     plot_results(g, d_vals, e_vals, approx_1st, approx_2nd, approx_3rd)
 
-    plt.savefig("figures/quasienergy/weak_field/"
-                + f"explicit_symmetric_g={g}_MA.pdf", dpi=400)
+    plt.savefig(img_folder/f"explicit_symmetric_g={g}_MA.pdf", dpi=400)
     plt.show()
 
 
@@ -222,7 +225,7 @@ def compare_magnus():
     ax2.set_xlim(np.min(d_vals), np.max(d_vals))
 
     plt.tight_layout()
-    plt.savefig("figures/quasienergy/weak_field/compare_magnus_g=1.pdf", dpi=400)
+    plt.savefig(img_folder / "compare_magnus_g=1.pdf", dpi=400)
     plt.show()
 
 
@@ -268,7 +271,7 @@ def demo_avoided_crossing():
 
     # Adjust layout and save
     plt.tight_layout()
-    plt.savefig('figures/quasienergy/exact_demo/demo_avoided_crossing_g=1.pdf', dpi=300)
+    plt.savefig(img_folder/'exact_demo_avoided_crossing_g=1.pdf', dpi=300)
     plt.show()
 
 
