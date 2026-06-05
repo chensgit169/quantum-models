@@ -1,11 +1,50 @@
-reference
+
 *.xml
 *.iml
-*.idea
-venv
 
-__pycache__
 
-*.ipynb_checkpoints
 
-tese.py
+# Python
+
+**pycache**/
+*.py[cod]
+*.so
+
+# Virtual environment
+
+.venv/
+venv/
+env/
+
+# Jupyter
+
+.ipynb_checkpoints/
+
+# Build / packaging
+
+build/
+dist/
+*.egg-info/
+
+# Testing
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+
+.idea/
+.vscode/
+
+# OS
+
+.DS_Store
+Thumbs.db
+
+# Data / outputs
+
+data/
+outputs/
+models/
+logs/
