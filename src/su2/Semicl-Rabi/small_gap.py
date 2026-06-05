@@ -9,6 +9,16 @@ from exact_solution import quasi_energy
 from su2.common.utils import sinx_over_x
 from su2.magnus import magnus_su2
 
+from pathlib import Path
+
+# path setting
+file_path = Path(__file__).parent
+img_folder = file_path / "figures" / "quasienergy" / "small_gap"
+if not img_folder.exists():
+    img_folder.mkdir(parents=True)
+
+
+# style of plot
 mpl.rcParams.update({
     "font.size": 24,
     "axes.labelsize": 26,
@@ -23,7 +33,8 @@ mpl.rcParams.update({
 
 
 def load_params(which: int = 1):
-    param_sets = yaml.safe_load(open('data/params.yaml', 'r'))['small_gap']
+    data_path = file_path / "data" / "params.yaml"
+    param_sets = yaml.safe_load(open(data_path, 'r'))['small_gap']
 
     params = param_sets['params-set'+str(which)]
     g = params['g']
@@ -66,7 +77,6 @@ def direct_magnus():
     d, g_vals = load_params(4)
     e_vals = np.array([quasi_energy(f, d, real_only=False).real for f in tqdm(g_vals)])
 
-
     # plt.plot(f_vals, e_vals + 1, color=line_main[0].get_color())
 
     def eps_sg(a_m, c_m):
@@ -103,7 +113,7 @@ def direct_magnus():
     plt.axhline(0.0, color='gray', linestyle='--', alpha=0.3)
     plt.legend(loc='lower left')
     plt.tight_layout()
-    plt.savefig('figures/quasienergy/small_gap/divergent_demo.pdf', dpi=400)
+    plt.savefig(img_folder / 'divergent_demo.pdf', dpi=400)
     plt.show()
 
 
@@ -150,8 +160,8 @@ def magnus_explicit_symmetry(show_minus_eps=False):
     # plt.title(r'Rabi Quasienergy $\Delta=$' + f'{d}')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("figures/quasienergy/small_gap/"
-                + f"explicit_symmetric_d={d}.eps", dpi=400)
+
+    plt.savefig(img_folder / f"explicit_symmetric_d={d}.eps", dpi=400)
     plt.show()
 
 
