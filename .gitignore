@@ -2,6 +2,7 @@ reference
 *.xml
 *.iml
 *.idea
+venv
 
 __pycache__
 
